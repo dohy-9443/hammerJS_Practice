@@ -28,7 +28,7 @@ export default function SubContent() {
     { id: 8, name: `나는 9이름`, text: `9이 쓴 내용입니다.` },
     { id: 9, name: `나는 10이름`, text: `10이 쓴 내용입니다.` },
   ]);
-  const [clickData, setClickData] = useState(false)
+  const [clickData, setClickData] = useState(0)
 
   const Els = useRef([])
   // ref로 li 담기
@@ -38,22 +38,27 @@ export default function SubContent() {
   }, [])
 
   useEffect(() => {
-    console.log(isData);
+    
   }, [isData])
-
-  const del = ({index}) => {
-    // let copyData = [...isData];
-    // copyData.splice(index, 1);
-    // setIsData(copyData)
-    // setIsData(isData.filter(item => item.id !== index))
+  
+  const del = () => {
+    console.log('실행')
+    Els.current.forEach((el, index) => {
+      console.log(el.listElement.classList.contains('swipeable-list-item__content--remove'))
+      if (el.listElement.classList.contains('swipeable-list-item__content--remove')) {
+        console.log(index)
+        setClickData(index)
+      }
+    })
+    setIsData(isData.splice(clickData, 1))
+    console.log(isData)
   }
-
-
+ 
   const trailingActions = (index) => (
     <TrailingActions>
       <SwipeAction
         destructive={true}
-        onClick={() => {del({index})}}
+        onClick={() => {}}
       >
         <Delete>삭제</Delete>
       </SwipeAction>
@@ -64,23 +69,24 @@ export default function SubContent() {
   return (
     <Container>
       <Wrap>
-        <div><SwipeableList type={ListType.IOS}>
-          {
-            isData?.map((item, index) => {
-              const {name, text} = item
-              return (
-                  
-                    <SwipeableListItem key={index}
-                      trailingActions={trailingActions({index})}
-                    >
-                      <DIV>{name}/{text}</DIV>
-                    </SwipeableListItem>
-                  
-               
-              )
-            })
-          }</SwipeableList>
-        </div>
+        <Center>
+          <SwipeableList type={ListType.IOS}>
+            {
+              isData?.map((item, index) => {
+                const {name, text} = item
+                return (
+                  <SwipeableListItem key={index}
+                    trailingActions={trailingActions(index)}
+                    ref={(el) => {Els.current[index] = el}}
+                    // map을 돌렸을 때 ref에 querySelectorAll과 같음?
+                  >
+                    <DIV>{name}/{text}</DIV>
+                  </SwipeableListItem>
+                )
+              })
+            }
+          </SwipeableList>
+        </Center>
       </Wrap>
     </Container>
   );
@@ -95,26 +101,22 @@ const Wrap = styled.div`
   display: flex; align-items: center; justify-content: center;
 `;
 
-const Ul = styled.ul`
-  width: 400px;
-  border: 2px solid #b9b9b9;
-  overflow: hidden;
-`;
-
-const Li = styled.li`
-  width: calc(100%); height: 50px;
-  border-bottom: 1px solid #efefef;
-  cursor: pointer;
-  background-color: #fff;
-
-  &:last-child { border-bottom: none; }
-`;
-
 const DIV = styled.div`
-  width:calc(100%); height: 100%;
+  width: 100%; height: 100%;
   line-height: 50px;
   display:inline-block;
-  border: 1px solid #333;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+`;
+
+const Center = styled.div`
+  width: 400px;
+  border: 2px solid #333;
+  border-bottom: 1px solid #333;
+
+  ${(DIV)}:last-child {
+    
+  }
 `;
 
 const Delete = styled.div`
@@ -123,4 +125,5 @@ const Delete = styled.div`
   display:inline-block;
   background: tomato;
   text-align: center;
+  cursor: pointer;
 `;
