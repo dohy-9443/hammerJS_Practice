@@ -16,7 +16,18 @@ import 'react-swipeable-list/dist/styles.css';
 
 export default function SubContent() {
   
-  const [isData, setIsData] = useState([]);
+  const [isData, setIsData] = useState([
+    { id: 0, name: `나는 1이름`, text: `1이 쓴 내용입니다.` },
+    { id: 1, name: `나는 2이름`, text: `2이 쓴 내용입니다.` },
+    { id: 2, name: `나는 3이름`, text: `3이 쓴 내용입니다.` },
+    { id: 3, name: `나는 4이름`, text: `4이 쓴 내용입니다.` },
+    { id: 4, name: `나는 5이름`, text: `5이 쓴 내용입니다.` },
+    { id: 5, name: `나는 6이름`, text: `6이 쓴 내용입니다.` },
+    { id: 6, name: `나는 7이름`, text: `7이 쓴 내용입니다.` },
+    { id: 7, name: `나는 8이름`, text: `8이 쓴 내용입니다.` },
+    { id: 8, name: `나는 9이름`, text: `9이 쓴 내용입니다.` },
+    { id: 9, name: `나는 10이름`, text: `10이 쓴 내용입니다.` },
+  ]);
   const [clickData, setClickData] = useState(false)
 
   const Els = useRef([])
@@ -24,29 +35,17 @@ export default function SubContent() {
 
   useEffect(() => {
     
-
-    setIsData([
-      { name: `나는 1이름`, text: `1이 쓴 내용입니다.` },
-      { name: `나는 2이름`, text: `2이 쓴 내용입니다.` },
-      { name: `나는 3이름`, text: `3이 쓴 내용입니다.` },
-      { name: `나는 4이름`, text: `4이 쓴 내용입니다.` },
-      { name: `나는 5이름`, text: `5이 쓴 내용입니다.` },
-      { name: `나는 6이름`, text: `6이 쓴 내용입니다.` },
-      { name: `나는 7이름`, text: `7이 쓴 내용입니다.` },
-      { name: `나는 8이름`, text: `8이 쓴 내용입니다.` },
-      { name: `나는 9이름`, text: `9이 쓴 내용입니다.` },
-      { name: `나는 10이름`, text: `10이 쓴 내용입니다.` },
-    ]);
   }, [])
 
   useEffect(() => {
     console.log(isData);
   }, [isData])
 
-  const del = (index) => {
-    let copyData = [...isData];
-    copyData.splice(index, 1);
-    setIsData(copyData)
+  const del = ({index}) => {
+    // let copyData = [...isData];
+    // copyData.splice(index, 1);
+    // setIsData(copyData)
+    // setIsData(isData.filter(item => item.id !== index))
   }
 
 
@@ -54,7 +53,7 @@ export default function SubContent() {
     <TrailingActions>
       <SwipeAction
         destructive={true}
-        
+        onClick={() => {del({index})}}
       >
         <Delete>삭제</Delete>
       </SwipeAction>
@@ -65,35 +64,23 @@ export default function SubContent() {
   return (
     <Container>
       <Wrap>
-        <Ul>
+        <div><SwipeableList type={ListType.IOS}>
           {
             isData?.map((item, index) => {
               const {name, text} = item
               return (
-                  <Li key={index}
-                    ref={(el) => {Els.current[index] = el}}
-                    // map을 돌렸을 때 ref에 queryselectAll 하는 것과 같음?
-                    
-                  >
-                    <SwipeableList type={ListType.IOS}>
-                      <SwipeableListItem 
-                        trailingActions={trailingActions(index)}
-                        swipeLeft={{action: () => { del(index) }}}
-                        
-                      >
-                        <DIV>{name}/{text}</DIV>
-                      </SwipeableListItem>
-                    </SwipeableList>
-                  </Li>
-
-                
                   
-                
-                
+                    <SwipeableListItem key={index}
+                      trailingActions={trailingActions({index})}
+                    >
+                      <DIV>{name}/{text}</DIV>
+                    </SwipeableListItem>
+                  
+               
               )
             })
-          }
-        </Ul>
+          }</SwipeableList>
+        </div>
       </Wrap>
     </Container>
   );
@@ -127,6 +114,7 @@ const DIV = styled.div`
   width:calc(100%); height: 100%;
   line-height: 50px;
   display:inline-block;
+  border: 1px solid #333;
 `;
 
 const Delete = styled.div`
